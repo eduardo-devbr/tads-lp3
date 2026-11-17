@@ -4,6 +4,7 @@ import br.edu.ifsp.orderflow.domain.Pedido;
 import br.edu.ifsp.orderflow.domain.ResultadoPagamento;
 import br.edu.ifsp.orderflow.events.*;
 
+import javax.xml.transform.Result;
 import java.time.Instant;
 
 public class PedidoService {
@@ -32,18 +33,15 @@ public class PedidoService {
         boolean foiReservado = this.estoqueService.reservar(pedido);
 
         if (!foiReservado) {
-
             pedido.cancelar();
             this.pedidoRepository.save(pedido);
-
             this.eventBus.publish(
-                new PedidoCancelado(
-                    pedido.getId(),
-                    "estoque insuficiente",
-                    Instant.now()
-                )
+                    new PedidoCancelado(
+                            pedido.getId(),
+                            "estoque insuficiente",
+                            Instant.now()
+                    )
             );
-
             return pedido;
         }
 
@@ -51,19 +49,17 @@ public class PedidoService {
         boolean naoAprovado = !resultado.isAprovado();
 
         if (naoAprovado) {
-
             this.estoqueService.liberar(pedido);
             pedido.cancelar();
             this.pedidoRepository.save(pedido);
 
             this.eventBus.publish(
-                new PagamentoRecusado(
-                    pedido.getId(),
-                    resultado.getMotivo(),
-                    Instant.now()
-                )
+                    new PagamentoRecusado(
+                            pedido.getId(),
+                            resultado.getMotivo(),
+                            Instant.now()
+                    )
             );
-
             return pedido;
         }
 
@@ -71,11 +67,11 @@ public class PedidoService {
         this.pedidoRepository.save(pedido);
 
         this.eventBus.publish(
-            new PagamentoAprovado(
-                pedido.getId(),
-                resultado.getIdTransacao(),
-                Instant.now()
-            )
+                new PagamentoAprovado(
+                        pedido.getId(),
+                        resultado.getIdTransacao(),
+                        Instant.now()
+                )
         );
 
         return pedido;

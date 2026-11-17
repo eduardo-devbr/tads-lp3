@@ -40,13 +40,13 @@ public class DemoSuporte {
         public final PedidoService pedidoService;
 
         App(
-            IEstoqueService estoqueService,
-            IPagamentoGateway pagamentoGateway,
-            INotificacaoService notificacaoService,
-            IPedidoRepository pedidoRepository,
-            IEventBus eventBus,
-            PedidoService pedidoService,
-            Metricas metricas
+                IEstoqueService estoqueService,
+                IPagamentoGateway pagamentoGateway,
+                INotificacaoService notificacaoService,
+                IPedidoRepository pedidoRepository,
+                IEventBus eventBus,
+                PedidoService pedidoService,
+                Metricas metricas
         ){
             this.estoqueService = estoqueService;
             this.pagamentoGateway = pagamentoGateway;
@@ -58,12 +58,12 @@ public class DemoSuporte {
         }
     }
 
-    public static App novoApp() {
-
+    public static App novoApp(){
         IEstoqueService estoqueService = new InMemoryEstoqueService();
         IPagamentoGateway pagamentoGateway = new FakePagamentoGateway();
         INotificacaoService notificacaoService = new ConsoleNotificacaoService();
         IPedidoRepository pedidoRepository = new InMemoryPedidoRepository();
+
 
         IEventBus eventBus = new SimpleEventBus();
         Metricas metricas = new Metricas();
@@ -85,22 +85,23 @@ public class DemoSuporte {
         estoqueService.adicionarEstoque(MOUSE, 1000);
         estoqueService.adicionarEstoque(TECLADO, 1000);
 
+
         return new App(
-            estoqueService,
-            pagamentoGateway,
-            notificacaoService,
-            pedidoRepository,
-            eventBus,
-            pedidoService,
-            metricas
+                estoqueService,
+                pagamentoGateway,
+                notificacaoService,
+                pedidoRepository,
+                eventBus,
+                pedidoService,
+                metricas
         );
     }
 
-    public static Pedido pedidoValido(int mouses) {
-
+    public static Pedido pedidoValido(int mouses){
         Pedido pedido = new Pedido(ANA);
         pedido.adicionarItem(new ItemPedido(MOUSE, mouses));
 
         return pedido;
     }
+
 }

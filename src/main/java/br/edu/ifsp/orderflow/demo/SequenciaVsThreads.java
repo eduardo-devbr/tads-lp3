@@ -6,7 +6,7 @@ import br.edu.ifsp.orderflow.domain.Pedido;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SequencialVsThreads {
+public class SequenciaVsThreads {
 
     private static final int TOTAL_PEDIDOS = 6;
 
@@ -18,7 +18,7 @@ public class SequencialVsThreads {
 
         long inicioSeq = System.currentTimeMillis();
 
-        for (int i = 0; i < TOTAL_PEDIDOS; i++) {
+        for (int i = 0; i < TOTAL_PEDIDOS; i++){
             Pedido pedido = DemoSuporte.pedidoValido(1);
             appA.pedidoService.processar(pedido);
         }
@@ -33,24 +33,25 @@ public class SequencialVsThreads {
         List<Thread> threads = new ArrayList<>();
         long initThr = System.currentTimeMillis();
 
-        for (int i = 0; i < TOTAL_PEDIDOS; i++) {
+        for (int i = 0; i < TOTAL_PEDIDOS; i++){
             Pedido pedido = DemoSuporte.pedidoValido(1);
             ProcessarPedidoTask task = new ProcessarPedidoTask(appB.pedidoService, pedido);
-            Thread thread = new Thread(task, "cliente-" + (i + 1));
+            Thread thread = new Thread(task,"cliente-" + (i+1));
 
             threads.add(thread);
             thread.start();
         }
 
-        for (Thread thread : threads) {
+        for (Thread thread : threads){
             thread.join();
         }
 
         long tempoThr = System.currentTimeMillis() - initThr;
 
         System.out.println();
-        System.out.printf("Sequencial:          %.1f s\n", tempoSeq / 1000.0);
-        System.out.printf("Thread por pedido:   %.1f s\n", tempoThr / 1000.0);
+        System.out.printf("Sequencial:           %.1f s\n", tempoSeq / 1000.0);
+        System.out.printf("Thread por pedido:    %.1f s\n", tempoThr / 1000.0);
         System.out.println(appB.metricas.resumo());
+
     }
 }
